@@ -48,9 +48,14 @@ class ProjectHooks:
             A mapping from a pipeline name to a ``Pipeline`` object.
 
         """
-        
-        # TODO: WRITE YOUR CODE HERE
-        return {"__default__": Pipeline([])}
+        data_engineering_pipeline = de.create_pipeline()
+        data_science_pipeline = ds.create_pipeline()
+
+        return {
+            "__default__": data_engineering_pipeline + data_science_pipeline,
+            "de": data_engineering_pipeline,
+            "ds": data_science_pipeline,
+        }
 
     @hook_impl
     def register_config_loader(self, conf_paths: Iterable[str]) -> ConfigLoader:
