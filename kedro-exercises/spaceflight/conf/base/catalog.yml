@@ -76,3 +76,9 @@ regressor:
   filepath: data/06_models/regressor.pickle
   versioned: true
   layer: models
+
+metrics:
+  type: pandas.ExcelDataSet
+  filepath: data/08_reporting/metrics.xlsx
+  versioned: true
+  layer: reporting

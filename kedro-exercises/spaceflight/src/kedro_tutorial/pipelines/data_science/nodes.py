@@ -26,7 +26,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import logging
 from typing import Dict, List
 
 import numpy as np
@@ -97,13 +96,13 @@ def evaluate_model(
     """
     y_train_pred = regressor.predict(X_train)
     y_test_pred = regressor.predict(X_test)
-    logger = logging.getLogger(__name__)
+    results = []
     for metric in metrics:
-        for subset in ["train", "test"]:
-            score = load_obj(metric)(
-                y_train if subset == "train" else y_test,
-                y_train_pred if subset == "train" else y_test_pred,
-            )
-            logger.info(
-                f"Model has a {subset} `{metric.rpartition('.')[2]}` of %.3f.", score
-            )
+        results.append(
+            {
+                "Metric": metric.rpartition(".")[2],
+                "Train": load_obj(metric)(y_train, y_train_pred),
+                "Test": load_obj(metric)(y_test, y_test_pred),
+            }
+        )
+    return pd.DataFrame(results)

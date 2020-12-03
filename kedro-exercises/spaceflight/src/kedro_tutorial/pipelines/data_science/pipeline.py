@@ -49,7 +49,7 @@ def create_pipeline(**kwargs):
                     "y_test",
                     "params:metrics",
                 ],
-                outputs=None,
+                outputs="metrics",
             ),
         ]
     )
