@@ -105,4 +105,4 @@ def evaluate_model(
                 "Test": load_obj(metric)(y_test, y_test_pred),
             }
         )
-    return pd.DataFrame(results)
+    return pd.DataFrame(results).set_index("Metric")
