@@ -81,6 +81,8 @@ def train_model(X_train: np.ndarray, y_train: np.ndarray) -> LinearRegression:
 
 def evaluate_model(
     regressor: LinearRegression,
+    X_train: np.ndarray,
+    y_train: np.ndarray,
     X_test: np.ndarray,
     y_test: np.ndarray,
     metrics: List[str],
@@ -93,8 +95,15 @@ def evaluate_model(
             y_test: Testing data for price.
 
     """
-    y_pred = regressor.predict(X_test)
+    y_train_pred = regressor.predict(X_train)
+    y_test_pred = regressor.predict(X_test)
     logger = logging.getLogger(__name__)
     for metric in metrics:
-        score = load_obj(metric)(y_test, y_pred)
-        logger.info(f"Model has a `{metric.rpartition('.')[2]}` of %.3f.", score)
+        for subset in ["train", "test"]:
+            score = load_obj(metric)(
+                y_train if subset == "train" else y_test,
+                y_train_pred if subset == "train" else y_test_pred,
+            )
+            logger.info(
+                f"Model has a {subset} `{metric.rpartition('.')[2]}` of %.3f.", score
+            )
