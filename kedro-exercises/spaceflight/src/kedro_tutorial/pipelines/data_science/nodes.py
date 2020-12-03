@@ -31,8 +31,8 @@ from typing import Dict, List
 
 import numpy as np
 import pandas as pd
+from kedro.utils import load_obj
 from sklearn.linear_model import LinearRegression
-from sklearn.metrics import r2_score
 from sklearn.model_selection import train_test_split
 
 
@@ -79,7 +79,12 @@ def train_model(X_train: np.ndarray, y_train: np.ndarray) -> LinearRegression:
     return regressor
 
 
-def evaluate_model(regressor: LinearRegression, X_test: np.ndarray, y_test: np.ndarray):
+def evaluate_model(
+    regressor: LinearRegression,
+    X_test: np.ndarray,
+    y_test: np.ndarray,
+    metrics: List[str],
+):
     """Calculate the coefficient of determination and log the result.
 
         Args:
@@ -89,6 +94,7 @@ def evaluate_model(regressor: LinearRegression, X_test: np.ndarray, y_test: np.n
 
     """
     y_pred = regressor.predict(X_test)
-    score = r2_score(y_test, y_pred)
     logger = logging.getLogger(__name__)
-    logger.info("Model has a coefficient R^2 of %.3f.", score)
+    for metric in metrics:
+        score = load_obj(metric)(y_test, y_pred)
+        logger.info(f"Model has a `{metric.rpartition('.')[2]}` of %.3f.", score)
